@@ -1,92 +1,14 @@
 <?php
-define('DB_USER', 'root');
-define('DB_PASS', '');
+session_start();
+define('DB_USER', 'web');
+define('DB_PASS', 'WebG@rdenMKT');
+//define('DB_USER', 'root');
+//define('DB_PASS', '');
 define('DB_NAME', 'rrhh');
 define('DB_TYPE', 'mysql');
 define('DB_HOST', 'localhost');
 include './Database.php';
 $db = new Database(DB_TYPE, DB_HOST, DB_NAME, DB_USER, DB_PASS);
-$error = false;
-$absolutedir = dirname(__FILE__);
-$dir = 'archivos/';
-$serverdir = $absolutedir . $dir;
-$filename = array();
-
-if (!empty($_POST)) {
-    $nombre_miss = cleanInput($_POST['nombre_miss']);
-    $edad_miss = cleanInput($_POST['edad_miss']);
-    $estado_civil_miss = cleanInput($_POST['estado_civil_miss']);
-    $sucursal_miss = cleanInput($_POST['sucursal_miss']);
-    $departamento_miss = cleanInput($_POST['departamento_miss']);
-    $hobbies_miss = cleanInput($_POST['hobbies_miss']);
-    $nombre_mister = cleanInput($_POST['nombre_mister']);
-    $edad_mister = cleanInput($_POST['edad_mister']);
-    $estado_civil_mister = cleanInput($_POST['estado_civil_mister']);
-    $sucursal_mister = cleanInput($_POST['sucursal_mister']);
-    $departamento_mister = cleanInput($_POST['departamento_mister']);
-    $hobbies_mister = cleanInput($_POST['hobbies_mister']);
-    if (!empty($_FILES['file'])) {
-        foreach ($_FILES as $inputname => $file) {
-            $newname = $_POST[$inputname . '_name'];
-            $extension = strtolower(end(explode('.', $file['name'])));
-            $fname = $newname . '.' . $extension;
-
-            $contents = file_get_contents($file['tmp_name']);
-
-            $handle = fopen($serverdir . $fname, 'w');
-            fwrite($handle, $contents);
-            fclose($handle);
-
-            $filename[] = $fname;
-        }
-    }
-}
-
-function cleanUrl($String) {
-    $String = str_replace(array('á', 'à', 'â', 'ã', 'ª', 'ä'), "a", $String);
-    $String = str_replace(array('Á', 'À', 'Â', 'Ã', 'Ä'), "A", $String);
-    $String = str_replace(array('Í', 'Ì', 'Î', 'Ï'), "I", $String);
-    $String = str_replace(array('í', 'ì', 'î', 'ï'), "i", $String);
-    $String = str_replace(array('é', 'è', 'ê', 'ë'), "e", $String);
-    $String = str_replace(array('É', 'È', 'Ê', 'Ë'), "E", $String);
-    $String = str_replace(array('ó', 'ò', 'ô', 'õ', 'ö', 'º'), "o", $String);
-    $String = str_replace(array('Ó', 'Ò', 'Ô', 'Õ', 'Ö'), "O", $String);
-    $String = str_replace(array('ú', 'ù', 'û', 'ü'), "u", $String);
-    $String = str_replace(array('Ú', 'Ù', 'Û', 'Ü'), "U", $String);
-    $String = str_replace(array('?', '[', '^', '´', '`', '¨', '~', ']', '¿', '!', '¡'), "", $String);
-    $String = str_replace("ç", "c", $String);
-    $String = str_replace("Ç", "C", $String);
-    $String = str_replace("ñ", "n", $String);
-    $String = str_replace("Ñ", "N", $String);
-    $String = str_replace("Ý", "Y", $String);
-    $String = str_replace("ý", "y", $String);
-
-    $String = str_replace("'", "", $String);
-    //$String = str_replace(".", "_", $String);
-    $String = str_replace(" ", "_", $String);
-    $String = str_replace("/", "_", $String);
-
-    $String = str_replace("&aacute;", "a", $String);
-    $String = str_replace("&Aacute;", "A", $String);
-    $String = str_replace("&eacute;", "e", $String);
-    $String = str_replace("&Eacute;", "E", $String);
-    $String = str_replace("&iacute;", "i", $String);
-    $String = str_replace("&Iacute;", "I", $String);
-    $String = str_replace("&oacute;", "o", $String);
-    $String = str_replace("&Oacute;", "O", $String);
-    $String = str_replace("&uacute;", "u", $String);
-    $String = str_replace("&Uacute;", "U", $String);
-    return $String;
-}
-
-function cleanInput($data) {
-    $data = trim($data);
-    $data = str_replace("'", "\'", $data);
-    $data = htmlspecialchars($data);
-    $data = stripslashes($data);
-
-    return $data;
-}
 
 $estados = $db->select("select * from 2017_estado_civil where estado = 1");
 ?>
@@ -157,21 +79,21 @@ $estados = $db->select("select * from 2017_estado_civil where estado = 1");
                     <h3>Anota tu nombre y el de tu pareja </h3>
                     <p>Las primeras en inscribirse participarán del certamen</p>
                 </div>
-                <div class="about-desc">
+                <div class="about-desc" id="formularioTop">
                     <div class="row">
-                        <div class="col-md-12">
+                        <div class="col-md-12" id="divFormulario">
                             <h4>Completa el formulario</h4>
-                            <form method="POST" class="row">
+                            <form method="POST" id="frmConcurso" enctype="multipart/form-data">
                                 <div class="col-md-6">
                                     <h4 class="datosMiss">Datos Miss</h4>
                                     <div class="col-md-12 col-sm-12">
-                                        <input type="text" class="form-control" name="nombre_miss" placeholder="Nombre Miss">
+                                        <input type="text" class="form-control" id="nombre_miss" name="nombre_miss" placeholder="Nombre Miss">
                                     </div>
                                     <div class="col-md-12 col-sm-12">
-                                        <input type="tel" class="form-control" name="edad_miss" placeholder="Edad Miss">
+                                        <input type="text" class="form-control" id="edad_miss" name="edad_miss" placeholder="Edad Miss">
                                     </div>
                                     <div class="col-md-12 col-sm-12">
-                                        <select class="form-control" name="estado_civil_miss">
+                                        <select class="form-control" id="estado_civil_miss" name="estado_civil_miss">
                                             <option value="">Estado Civil Miss</option>
                                             <?php foreach ($estados as $item): ?>
                                                 <option value="<?= $item['id']; ?>"><?= utf8_encode($item['descripcion']); ?></option>
@@ -179,25 +101,25 @@ $estados = $db->select("select * from 2017_estado_civil where estado = 1");
                                         </select>
                                     </div>
                                     <div class="col-md-12 col-sm-12">
-                                        <input type="tel" class="form-control" name="sucursal_miss" placeholder="Sucursal Miss">
+                                        <input type="tel" class="form-control" id="sucursal_miss" name="sucursal_miss" placeholder="Sucursal Miss">
                                     </div>
                                     <div class="col-md-12 col-sm-12">
-                                        <input type="tel" class="form-control" name="departamento_miss" placeholder="Departamento Miss">
+                                        <input type="tel" class="form-control" id="departamento_miss" name="departamento_miss" placeholder="Departamento Miss">
                                     </div>
                                     <div class="col-md-12 col-sm-12">
-                                        <textarea class="form-control" rows="5" name="hobbies_miss" placeholder="Hobbies Miss"></textarea>
+                                        <textarea class="form-control" rows="5" id="hobbies_miss" name="hobbies_miss" placeholder="Hobbies Miss"></textarea>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <h4 class="datosMiss">Datos Mister</h4>
                                     <div class="col-md-12 col-sm-6">
-                                        <input type="text" class="form-control" name="nombre_mister" placeholder="Nombre Mister">
+                                        <input type="text" class="form-control" id="nombre_mister" name="nombre_mister" placeholder="Nombre Mister">
                                     </div>
                                     <div class="col-md-12 col-sm-12">
-                                        <input type="text" class="form-control" name="edad_mister" placeholder="Edad Mister">
+                                        <input type="text" class="form-control" id="edad_mister" name="edad_mister" placeholder="Edad Mister">
                                     </div>
                                     <div class="col-md-12 col-sm-12">
-                                        <select class="form-control" name="estado_civil_mister">
+                                        <select class="form-control" id="estado_civil_mister" name="estado_civil_mister">
                                             <option value="">Estado Civil Mister</option>
                                             <?php foreach ($estados as $item): ?>
                                                 <option value="<?= $item['id']; ?>"><?= utf8_encode($item['descripcion']); ?></option>
@@ -205,23 +127,23 @@ $estados = $db->select("select * from 2017_estado_civil where estado = 1");
                                         </select>
                                     </div>
                                     <div class="col-md-12 col-sm-12">
-                                        <input type="tel" class="form-control" name="sucursal_mister" placeholder="Sucursal Mister">
+                                        <input type="tel" class="form-control" id="sucursal_mister" name="sucursal_mister" placeholder="Sucursal Mister">
                                     </div>
                                     <div class="col-md-12 col-sm-12">
-                                        <input type="tel" class="form-control" name="departamento_mister" placeholder="Departamento Mister">
+                                        <input type="tel" class="form-control" id="departamento_mister" name="departamento_mister" placeholder="Departamento Mister">
                                     </div>
                                     <div class="col-md-12 col-sm-12">
-                                        <textarea class="form-control" rows="5" name="hobbies_mister" placeholder="Hobbies Mister"></textarea>
+                                        <textarea class="form-control" rows="5" id="hobbies_mister" name="hobbies_mister" placeholder="Hobbies Mister"></textarea>
                                     </div>
                                 </div>
                                 <div class="col-md-12">
-                                    <label>Agrega tus imagenes</label>
+                                    <label>Agrega tus imagenes <small style="font-size: 10px; color: #4f4e4e;">(Opcional)</small></label>
                                     <div class="html5fileupload demo_multi" data-form="true" data-multiple="true" style="width: 95%; margin: 0px auto;">
                                         <input type="file" name="file" />
                                     </div>
                                 </div>
                                 <div class="col-md-12" style="margin: 15px 0px;">
-                                    <button id="submit" type="submit" class="btn btn-danger btn-block" name="submit">Enviar</button>
+                                    <button id="btnEnviar" type="submit" class="btn btn-danger btn-block" name="submit">Enviar</button>
                                 </div>
                             </form>
                         </div>
@@ -230,7 +152,7 @@ $estados = $db->select("select * from 2017_estado_civil where estado = 1");
             </div>
         </div>
         <!-- Service 1 -->
-        <div class="servicesbox bg1">
+        <div class="servicesbox bg1" id="imagenHipster">
             <div class="container">
                 <div class="row">
                     <div style="height: 300px;"></div>
@@ -270,7 +192,84 @@ $estados = $db->select("select * from 2017_estado_civil where estado = 1");
         <script src="js/custom.js"></script>
         <script src="html5fileupload/html5fileupload.min.js"></script>
         <script type="text/javascript">
-            $('.html5fileupload.demo_multi').html5fileupload();
+            $(document).ready(function () {
+                $('.html5fileupload.demo_multi').html5fileupload();
+                $('#btnEnviar').click(function (e) {
+                    e.preventDefault();
+                    var nombre_miss = $('#nombre_miss');
+                    var edad_miss = $('#edad_miss');
+                    var estado_civil_miss = $('#estado_civil_miss');
+                    var sucursal_miss = $('#sucursal_miss');
+                    var departamento_miss = $('#departamento_miss');
+                    var hobbies_miss = $('#hobbies_miss');
+                    var nombre_mister = $('#nombre_mister');
+                    var edad_mister = $('#edad_mister');
+                    var estado_civil_mister = $('#estado_civil_mister');
+                    var sucursal_mister = $('#sucursal_mister');
+                    var departamento_mister = $('#departamento_mister');
+                    var hobbies_mister = $('#hobbies_mister');
+                    validarCampo(nombre_miss);
+                    validarCampo(edad_miss);
+                    validarCampo(estado_civil_miss);
+                    validarCampo(sucursal_miss);
+                    validarCampo(departamento_miss);
+                    validarCampo(hobbies_miss);
+                    validarCampo(nombre_mister);
+                    validarCampo(edad_mister);
+                    validarCampo(estado_civil_mister);
+                    validarCampo(sucursal_mister);
+                    validarCampo(departamento_mister);
+                    validarCampo(hobbies_mister);
+                    if (nombre_miss.val().trim().length > 0
+                            && edad_miss.val().trim().length > 0
+                            && estado_civil_miss.val().trim().length > 0
+                            && sucursal_miss.val().trim().length > 0
+                            && departamento_miss.val().trim().length > 0
+                            && hobbies_miss.val().trim().length > 0
+                            && nombre_mister.val().trim().length > 0
+                            && edad_mister.val().trim().length > 0
+                            && estado_civil_mister.val().trim().length > 0
+                            && sucursal_mister.val().trim().length > 0
+                            && departamento_mister.val().trim().length > 0
+                            && hobbies_mister.val().trim().length > 0) {
+                        if ($.isNumeric(edad_miss.val()) == true) {
+                            if ($.isNumeric(edad_mister.val()) == true) {
+                                //var data = new FormData($('#frmConcurso')[0]);
+                                var ajaxData = new FormData($('#frmConcurso')[0]);
+                                //ajaxData.append('action', 'uploadImages');
+                                jQuery.each($("input[name^='file']")[0].files, function (i, file) {
+                                    ajaxData.append('file[' + i + ']', file);
+                                });
+                                $.ajax({
+                                    cache: false,
+                                    contentType: false,
+                                    processData: false,
+                                    url: "ajax/saveData.php",
+                                    async: true,
+                                    type: "POST",
+                                    data: ajaxData,
+                                }).done(function (data) {
+                                    $('#imagenHipster').css('display', 'none');
+                                    $('#formularioTop').html(data);
+                                });
+                            } else {
+                                edad_mister.css("border", "3px solid red");
+                                edad_mister.val('Edad tiene que ser numerica');
+                            }
+                        } else {
+                            edad_miss.css("border", "3px solid red");
+                            edad_miss.val('Edad tiene que ser numerica');
+                        }
+                    }
+                });
+                function validarCampo(id) {
+                    if (id.val().trim().length == 0) {
+                        id.css("border", "3px solid red");
+                    } else {
+                        id.css("border", "1px solid #d2d6de");
+                    }
+                }
+            });
         </script>
     </body>
 </html>
