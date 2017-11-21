@@ -1,9 +1,9 @@
 <?php
 session_start();
-define('DB_USER', 'web');
-define('DB_PASS', 'WebG@rdenMKT');
-//define('DB_USER', 'root');
-//define('DB_PASS', '');
+//define('DB_USER', 'web');
+//define('DB_PASS', 'WebG@rdenMKT');
+define('DB_USER', 'root');
+define('DB_PASS', '');
 define('DB_NAME', 'rrhh');
 define('DB_TYPE', 'mysql');
 define('DB_HOST', 'localhost');
@@ -248,6 +248,10 @@ $estados = $db->select("select * from 2017_estado_civil where estado = 1");
                                     async: true,
                                     type: "POST",
                                     data: ajaxData,
+                                    beforeSend: function (xhr) {
+                                        $('#imagenHipster').css('display', 'none');
+                                        $('#formularioTop').html('<img src="images/loading.gif">');
+                                    }
                                 }).done(function (data) {
                                     $('#imagenHipster').css('display', 'none');
                                     $('#formularioTop').html(data);
